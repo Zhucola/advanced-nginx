@@ -17,6 +17,8 @@ advanced-nginx
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
+    * [root](#root)
+    * [alias](#alias)
     * [merge_slashes](#merge_slashes)
     * [location](#location)
 
@@ -124,6 +126,57 @@ server {
 上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 # ngx_http_core_module
+## root
+```
+   Syntax:	root path;
+   Default:	
+   root html;
+   Context:	http, server, location, if in location
+```
+仅仅是将uri拼到root值的后面
+path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
+如果nginx的编译路径是/usr/local/nginx，则默认的root位置是/usr/local/nginx/html
+```nginx
+   root /tmp;
+   location /a {
+      return 200 $request_filename;
+   }
+```
+```curl
+curl 'http://127.0.0.1/a/b'
+```
+会输出/tmp/a/b
+
+## alias
+```
+   Syntax:	alias path;
+   Default:	—
+   Context:	location
+```
+path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
+指定一个指定路径的替换路径
+alias和rewrite不能同时出现
+```nginx
+   alias /tmp;
+   location /a {
+      return 200 $request_filename;
+   }
+```
+```curl
+curl 'http://127.0.0.1/a/b'
+```
+会输出/tmp/b
+```nginx
+   alias /tmp;
+   merge_slashes on;
+   location /a/ {
+      return 200 $request_filename;
+   }
+```
+```curl
+curl 'http://127.0.0.1/a/b'
+```
+会输出/tmpb
 ## merge_slashes
 ```
    Syntax:	merge_slashes on | off;
