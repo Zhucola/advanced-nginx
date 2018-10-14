@@ -26,10 +26,10 @@ openssl rand ...
 openssl genrsa用于生成RSA私钥，**不会生成公钥，因为公钥提取自私钥**
 
 openssl genrsa 
-\ -\out filename 将指定的秘钥保存至filenme文件，若未指定则为标准输出
-\ numbites 秘钥长度，该项必须为命令行最后一项
-\ \-des等  加密私钥的算法
-\ \-passout args 加密私钥文件的密码
+- \-out filename 将指定的秘钥保存至filenme文件，若未指定则为标准输出
+- numbites 秘钥长度，该项必须为命令行最后一项
+- \-des等  加密私钥的算法
+- \-passout args 加密私钥文件的密码
 
 密码是可选项，但是强烈推荐使用密码。密码可以安全的存储、传输和备份受保护的秘钥。但是可能每次重启web服务器都需要重新输入密码。如果需要更加安全，建议投资硬件
 ```openssl
