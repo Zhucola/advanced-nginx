@@ -35,17 +35,17 @@ openssl genrsa ...
   openssl genrsa –aes128 –out a.key 2048
   openssl genrsa -des3 -out a.key  -passout pass:1234 2048
 ```
-#查看RSA秘钥公私钥、结构
+# 查看RSA秘钥公私钥、结构
 ```openssl
   openssl genrsa -des3 -out a.key  -passout pass:1234 2048
   openssl rsa -text -in a.key    # 查看结构
   openssl rsa -in a.key -pubout -out a_pub.key -passin pass:1234  #查看公钥
   openssl rsa -in a.key -out a_priv.key   #查看未加密的私钥
 ```
-#查看RSA秘钥是否被篡改
+# 查看RSA秘钥是否被篡改
 ```openssl
   openssl genrsa -des3 -out a.key  -passout pass:1234 2048
   openssl rsa -in a.key -check -passin pass:1234
 ```
-#秘钥DSA
+# 秘钥DSA
 DSA秘钥生成分为两步，1.生成DSA参数2.秘钥创建
