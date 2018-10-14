@@ -124,5 +124,10 @@ server {
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 # ngx_http_core_module
 ## location
-asd
+```
+   Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }
+   location @name { ... }
+   Default:	—
+   Context:	server, location
+```
 
