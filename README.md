@@ -71,3 +71,37 @@ server {
     curl 'http://127.0.0.1' -H 'host: xxx.com'
 ```
 以上请求的host被指定为xxx.com，没有server_name与其匹配，所以nginx会将请求分发到定义在此端口上的默认虚拟主机(default_server定义的)，返回http_code 500，消息体server_name is c.com d.com
+```nginx
+server {
+    listen 80;
+    server_name "";
+    return 444;
+}
+server {
+    listen 80;
+    server_name c.com d.com;
+    location / {
+        return 500 "server_name is c.com d.com";
+    }
+}
+```
+设置主机名为空字符串以匹配未定义Host头的请求，而且返回了一个nginx特有的，非http标准码444，可以用来关闭连接（不是一定要返回444，可以根据自身的业务需求来处理逻辑，比如我要返回"没有host头与之匹配"）
+```curl
+    curl 'http://127.0.0.1' -H 'host: xxx.com'
+```
+返回curl: (52) Empty reply from server
+```nginx
+server {
+    listen 80;
+    server_name "";
+    return 200 "没有host头与之匹配";
+}
+server {
+    listen 80;
+    server_name c.com d.com;
+    location / {
+        return 500 "server_name is c.com d.com";
+    }
+}
+```
+
