@@ -128,7 +128,9 @@ server {
   Context:	http, server
 ```
 指定一个受信与CA的证书，这个证书用来做客户端证书校验
+
 指定的证书在请求的时候**会**响应给给客户端
+
 ```nginx
 server {
           listen       443 ssl;
@@ -153,4 +155,6 @@ server {
   Context:	http, server
 ```
 指定一个受信与CA的证书，这个证书用来做客户端证书校验
+
 指定的证书在请求的时候**不会**响应给给客户端
+
