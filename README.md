@@ -17,7 +17,7 @@ advanced-nginx
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
-    * location(#nginx如何处理一个请求)
+    * [location](#location)
 
 
 # nginx如何处理一个请求
