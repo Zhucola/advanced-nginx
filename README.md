@@ -16,6 +16,8 @@ advanced-nginx
 
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
+* [ngx_http_core_module](#ngx_http_core_module)
+** location (#location)
 
 
 # nginx如何处理一个请求
@@ -119,5 +121,8 @@ server {
 }
 ```
 上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
-默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器
+**默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
+# ngx_http_core_module
+## location
+asd
 
