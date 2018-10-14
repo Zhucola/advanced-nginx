@@ -1,12 +1,15 @@
-base-nginx
+advanced-nginx
 =======================
+涉及
+- nginx编译与安装
+- nginx各模块基本操作与总结
+- openssl私钥、CSR、CRT、自签CA的搭建
 
-一些nginx的基础操作与总结
 
 联系作者
 - weixin: 363260961
 
-使用
+使用版本
 - CentOS Linux release 7.5.1804 (Core)
 - nginx/1.12.2版本
 - curl 7.61.0 (x86_64-pc-linux-gnu) libcurl/7.61.0 OpenSSL/1.0.2k zlib/1.2.7
