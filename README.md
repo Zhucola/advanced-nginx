@@ -13,8 +13,8 @@ base-nginx
 
 nginx首先选定由那一个虚拟主机来处理请求
 ```nginx
-  server {
+server {
     listen 80;
     server_name example.org www.example.org;
-   }
+}
 ```
