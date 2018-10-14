@@ -204,8 +204,22 @@ curl 'http://127.0.0.1/abc%2B'
 curl 'http://127.0.0.1/b/../a'
 ```
 因为请求URI会规范化，所以将/b/../a解析成/a，返回http_code 200,消息体/a
-
-
+路径可以嵌套
+```nginx
+   location /{
+      location /a {
+         return 200 "a";
+      }
+      location /b {
+         return 200 "b";
+      }
+   }
+```
+```curl
+curl 'http://127.0.0.1/a'
+```
+返回http_code 200,消息体/a
+如果请求"\/"出现频繁，定义"location \= \/"可以提高这些请求的处理速度， 因为查找过程在第一次比较以后即结束
 
 
 
