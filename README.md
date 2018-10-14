@@ -3,7 +3,10 @@ base-nginx
 
 一些nginx的基础操作与总结
 
-使用nginx/1.12.2版本
+使用
+- CentOS Linux release 7.5.1804 (Core)
+- nginx/1.12.2版本
+- curl 7.61.0 (x86_64-pc-linux-gnu) libcurl/7.61.0 OpenSSL/1.0.2k zlib/1.2.7
 
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
