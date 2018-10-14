@@ -125,7 +125,23 @@ server {
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 # ngx_http_core_module
 ## merge_slashes
-
+```
+   Syntax:	merge_slashes on | off;
+   Default:	merge_slashes on;
+   Context:	http, server
+```
+   开启或者关闭将请求中URI相邻的两个或者更多斜线合并成一个的功能
+   压缩URI对于前缀匹配和正则匹配的正确性是很重要的，没有开启这个功能时，请求//script/one.php不能被location /scripts/匹配
+   如果URI中包含base64编码内容，必须将斜线压缩调整成off，因为base64编码本身会使用“/”字符，然而出于安全方面的考虑，最好还是不要关闭压缩
+```nginx
+   location / {
+      return 200 $uri;
+   }
+```
+```curl
+curl 'http://127.0.0.1/a//b'
+```
+会输出/a/b
 ## location
 ```
    Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }    location @name { ... }
