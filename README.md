@@ -17,6 +17,7 @@ advanced-nginx
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
+    * [merge_slashes](#merge_slashes)
     * [location](#location)
 
 
@@ -123,10 +124,11 @@ server {
 上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 # ngx_http_core_module
+## merge_slashes
+
 ## location
 ```
-   Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }
-            location @name { ... }
+   Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }    location @name { ... }
    Default:	—
    Context:	server, location
 ```
@@ -134,7 +136,22 @@ server {
 路径匹配在URI规范化以后进行，所谓规范化，就是先将URI中形如"%XX"的编码字符进行编码，再解析URI中的相对路径"."和".."部分，另外还可能会压缩相邻的两个或多个斜线成为一个斜线(需要merge_slashes on;)
 ```nginx
    location /abc+ {
-      return 200 123;
+      return 200 $uri;
    }
 ```
+```curl
+curl 'http://127.0.0.1/abc%2B'
+```
+因为请求URI会规范化，所以将/abc%2B解析成/abc+，返回http_code 200,消息体/abc+
+```nginx
+   location /a {
+      return 200 $uri;
+   }
+```
+```curl
+curl 'http://127.0.0.1/b/../a'
+```
+因为请求URI会规范化，所以将/b/../a解析成/a，返回http_code 200,消息体/a
+
+
 
