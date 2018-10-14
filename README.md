@@ -85,11 +85,12 @@ server {
     }
 }
 ```
-设置主机名为空字符串以匹配未定义Host头的请求，而且返回了一个nginx特有的，非http标准码444，可以用来关闭连接（不是一定要返回444，可以根据自身的业务需求来处理逻辑，比如我要返回"没有host头与之匹配"）
+设置主机名为空字符串以匹配未定义Host头的请求，而且返回了一个nginx特有的，非http标准码444，可以用来关闭连接
 ```curl
     curl 'http://127.0.0.1' -H 'host: xxx.com'
 ```
 返回curl: (52) Empty reply from server
+不是一定要返回444，可以根据自身的业务需求来处理逻辑，比如我要返回"没有host头与之匹配"
 ```nginx
 server {
     listen 80;
@@ -104,4 +105,19 @@ server {
     }
 }
 ```
+从0.8.48版本开始，server_name "" 以成为主机名的默认设置，所以可以省略server_name ""
+```nginx
+server {
+    listen 192.168.1.111:80;
+    server_name a.com;
+    ...
+}
+server {
+    listen 192.168.1.112:80;
+    server_name b.com;
+    ...
+}
+```
+上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
+默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器
 
