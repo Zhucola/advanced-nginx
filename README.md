@@ -3,6 +3,9 @@ base-nginx
 
 一些nginx的基础操作与总结
 
+联系作者
+- weixin: 363260961
+
 使用
 - CentOS Linux release 7.5.1804 (Core)
 - nginx/1.12.2版本
