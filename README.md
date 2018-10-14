@@ -163,6 +163,70 @@ curl 'http://127.0.0.1/a//b'
 * \~ \*    \~ 
 * /abc
 
+```nginx
+   location = /ab {  
+      return 200 "= /ab"
+   }
+   location /a {  
+      return 200 "/a"
+   }
+   location /ab {  
+      return 200 "/ab"
+   }
+```
+```curl
+curl 'http://127.0.0.1/a'
+```
+返回http_code 200,消息体/a
+```nginx
+   location /a {  
+      return 200 "/a"
+   }
+   location /ab {  
+      return 200 "/ab"
+   }
+```
+```curl
+curl 'http://127.0.0.1/ab'
+```
+返回http_code 200,消息体/ab
+```nginx
+   location /a {  
+      return 200 "/a"
+   }
+   location /ab {  
+      return 200 "/ab"
+   }
+```
+```curl
+curl 'http://127.0.0.1/ab'
+```
+返回http_code 200,消息体/ab
+```nginx
+   location = /ab {  
+      return 200 "= /ab"
+   }
+   location ^~ /ab {  
+      return 200 "^~ /ab"
+   }
+```
+```curl
+curl 'http://127.0.0.1/ab'
+```
+返回http_code 200,消息体= /ab
+```nginx
+   location ~ /ab {  
+      return 200 "~ /ab"
+   }
+   location ~* /ab {  
+      return 200 "~* /ab"
+   }
+```
+```curl
+curl 'http://127.0.0.1/aB'
+```
+返回http_code 200,消息体~\* ab
+
 **=与^~不支持正则**
 ```nginx
    location = /abc$ {  # $不是正则的结束标志
@@ -221,6 +285,40 @@ curl 'http://127.0.0.1/a'
 返回http_code 200,消息体/a
 
 如果请求"\/"出现频繁，定义"location \= \/"可以提高这些请求的处理速度， 因为查找过程在第一次比较以后即结束
-
-
+```nginx
+   server {
+      listen 80;
+      location /a/ {
+         proxy_pass http://127.0.0.1:81/b;
+      }
+   }
+   server {
+      listen 81;
+      location / {
+         return 200 $uri;
+      }
+   }
+```
+```curl
+curl 'http://127.0.0.1/a'
+```
+返回http_code 301
+```nginx
+   server {
+      listen 80;
+      location /a {
+         proxy_pass http://127.0.0.1:81/b;
+      }
+   }
+   server {
+      listen 81;
+      location / {
+         return 200 $uri;
+      }
+   }
+```
+```curl
+curl 'http://127.0.0.1/a'
+```
+返回http_code 200，响应体/b
 
