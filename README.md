@@ -3,7 +3,7 @@ advanced-nginx
 涉及
 - nginx编译与安装
 - nginx各模块基本操作与总结
-- openssl私钥、CSR、CRT、自签CA的搭建
+- openssl私钥、CSR、CRT、自签CA的搭建(请查看openssl.md)
 
 
 联系作者
