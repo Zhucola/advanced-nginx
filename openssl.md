@@ -4,6 +4,7 @@
   * [查看RSA秘钥公私钥、结构](#查看RSA秘钥公私钥、结构)
   * [查看RSA秘钥是否被篡改](#查看RSA秘钥是否被篡改)
  * [秘钥DSA](#秘钥DSA)
+  * [查看DSA秘钥公私钥、结构](#查看DSA秘钥公私钥、结构)
 # 随机数
 openssl rand ...
 - \-out file  指定随机数输出文件
@@ -50,3 +51,14 @@ openssl genrsa
 ```
 # 秘钥DSA
 DSA秘钥生成分为两步，1.生成DSA参数2.秘钥创建
+```openssl
+  openssl dsaparam -genkey 2048 | openssl dsa -out d.key -aes128
+```
+# 查看DSA秘钥公私钥、结构
+```openssl
+  openssl dsaparam -genkey 2048 | openssl dsa -out d.key -aes128
+  openssl dsa -text -in d.key  # 查看结构
+  openssl dsa -in d.key -pubout -out d_pub.key  #查看公钥
+  openssl dsa -in d.key -out d_prive.key  #查看私钥
+  
+```
