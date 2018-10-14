@@ -126,8 +126,15 @@ server {
 ## location
 ```
    Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }
-   location @name { ... }
+            location @name { ... }
    Default:	—
    Context:	server, location
+```
+根据请求的URI来设置配置
+路径匹配在URI规范化以后进行，所谓规范化，就是先将URI中形如"%XX"的编码字符进行编码，再解析URI中的相对路径"."和".."部分，另外还可能会压缩相邻的两个或多个斜线成为一个斜线(需要merge_slashes on;)
+```nginx
+   location /abc+ {
+      return 200 123;
+   }
 ```
 
