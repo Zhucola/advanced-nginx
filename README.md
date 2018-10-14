@@ -33,7 +33,7 @@ server {
     listen 80;
     server_name c.com d.com;
     location / {
-        return 200 "server_name is c.com d.com";
+        return 500 "server_name is c.com d.com";
     }
 }
 ```
@@ -41,3 +41,33 @@ server {
 ```curl
     curl 'http://127.0.0.1' -H 'host: a.com'
 ```
+以上请求的host被指定为a.com，所以匹配到server_name a.com b.com，返回http_code 200，消息体server_name is a.com b.com
+```curl
+    curl 'http://127.0.0.1' -H 'host: c.com'
+```
+以上请求的host被指定为c.com，所以匹配到server_name c.com d.com，返回http_code 500，消息体server_name is c.com d.com
+```curl
+    curl 'http://127.0.0.1' -H 'host: xxx.com'
+```
+以上请求的host被指定为xxx.com，没有server_name与其匹配，所以nginx会将请求分发到定义在此端口上的默认虚拟主机(第一个被列出的)，返回http_code 200，消息体server_name is a.com b.com
+如果将nginx配置改为
+```nginx
+server {
+    listen 80;
+    server_name a.com b.com;
+    location / {
+        return 200 "server_name is a.com b.com";
+    }
+}
+server {
+    listen 80 default_server;
+    server_name c.com d.com;
+    location / {
+        return 500 "server_name is c.com d.com";
+    }
+}
+```
+```curl
+    curl 'http://127.0.0.1' -H 'host: xxx.com'
+```
+以上请求的host被指定为xxx.com，没有server_name与其匹配，所以nginx会将请求分发到定义在此端口上的默认虚拟主机(default_server定义的)，返回http_code 500，消息体server_name is c.com d.com
