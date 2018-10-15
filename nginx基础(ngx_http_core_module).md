@@ -20,7 +20,7 @@ advanced-nginx
     * [error_page](#error_page)
     * [merge_slashes](#merge_slashes)
     * [location](#location)
-
+    * [server_tokens](#server_tokens)
 
 # nginx如何处理一个请求
 
@@ -233,6 +233,17 @@ curl 'http://127.0.0.1/a/b'
    }
 ```
 也可以进行重定向
+```nginx
+   location /a {
+      error_page 404 @back;   
+   }
+   location @back {
+      return 200 $uri;
+   }
+```
+如果不希望error_page改变uri，可以将错误转到一个命名路径，比如uri /a发生404，则跳转到location @back，最后返回/a，uri不会改变
+
+**如果不存在location @back，则会发生500 Internal Server Error**
 
 ## merge_slashes
 ```
@@ -432,3 +443,40 @@ curl 'http://127.0.0.1/a'
 ```
 返回http_code 200，响应体/b
 
+```nginx
+   root /tmp;
+   index index.css;
+   server {
+      listen 80;
+      location / {
+       
+      }
+      location /index.css {
+         return 200 123;
+      }
+   }
+```
+请求uri为/，则uri变为/index.css，查找location /index.css，即使有/tmp/index.css，最后也会返回return 200 123
+
+## server_tokens
+```
+   Syntax:	server_tokens on | off | build | string;
+   Default: server_tokens on;
+   Context:	http, server, location
+```
+开启或者关闭在响应头中输出nginx版本号
+```
+   HTTP/1.1 200 OK
+   Server: nginx/1.14.0
+```
+参数build，如果编译时候configure -–build=8，则
+```
+   HTTP/1.1 200 OK
+   Server: nginx/1.14.0 (8)
+```
+参数off会不显示具体nginx版本
+```
+   HTTP/1.1 200 OK
+   Server: nginx
+```
+参数string在商业版本中使用
