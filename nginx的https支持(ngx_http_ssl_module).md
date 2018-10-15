@@ -32,12 +32,14 @@ http {
 
 ## 目录
 * [ssl](#ssl)
+* [ssl_buffer_size](#ssl_buffer_size)
 * [ssl_protocols](#ssl_protocols)
 * [ssl_certificate ](#ssl_certificate)
 * [ssl_certificate_key](#ssl_certificate_key)
 * [ssl_password_file](#ssl_password_file)
 * [ssl_verify_client](#ssl_verify_client)
 * [ssl_client_certificate](#ssl_client_certificate)
+* [ssl_session_cache](#ssl_session_cache)
 
 # ssl
 ```nginx
@@ -46,6 +48,16 @@ http {
   Context:	http, server
 ```
 该指令在1.15.0以上版本被淘汰，应该使用listen 443 ssl;这种配置来代替
+
+# ssl_buffer_size 
+```
+    Syntax:	    ssl_buffer_size size;
+    Default:    ssl_buffer_size 16k;
+    Context:	http, server
+```
+定义发送数据buffer区域的大小
+如果发送的数据较大，则使用默认的16k就好
+如果发送的数据小，则使用4k
 
 # ssl_protocols
 ```nginx
@@ -158,3 +170,28 @@ server {
 
 指定的证书在请求的时候**不会**响应给给客户端
 
+## ssl_session_cache
+```
+    Syntax:	    ssl_session_cache off | none | [builtin[:size]] [shared:name:size];
+    Default:	ssl_session_cache none;
+    Context:	http, server
+```
+定义如何存储session
+参数none
+
+    nginx告诉客户端可以重用session，但是nginx不会存储session，实际上没有使用session
+参数off
+
+    nginx告诉客户端不可以重用session
+    
+参数builtin
+
+    在OpenSSL中构建的缓存；由一个工作进程实现功能。缓存大小在会话中指定。如果没有给出大小，则等于20480个会话。使用内置缓存可能导致内存碎片化。
+
+参数shared
+
+    在所有工作进程之间共享的高速缓存。缓存大小以字节指定；一兆字节可以存储大约4000个会话。每个共享缓存应该具有任意的名称。同一名称的缓存可以在多个虚拟服务器中使用
+```
+    ssl_session_cache builtin:1000 shared:SSL:10m;
+```
+builtin和shared可以同时指定，但是使用shared会更加高效
