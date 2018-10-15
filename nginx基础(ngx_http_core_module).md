@@ -22,7 +22,7 @@ advanced-nginx
     * [location](#location)
     * [server_tokens](#server_tokens)
     * [client_max_body_size](#client_max_body_size)
-    
+    * [client_header_timeout](#client_header_timeout)   
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -494,3 +494,11 @@ curl 'http://127.0.0.1/a'
    curl 'http://127.0.0.1' -H 'Content-Length: 1234
 ```
 默认值1m的可接受最大Content-Length为1048576
+
+## client_header_timeout
+```
+   Syntax:	client_header_timeout time;
+   Default:	client_header_timeout 60s;
+   Context:	http, server
+```
+定义读取客户端请求头部的超时。如果客户端在这段时间内没有传送完整的头部到nginx， nginx将返回错误408 (Request Time-out)到客户端
