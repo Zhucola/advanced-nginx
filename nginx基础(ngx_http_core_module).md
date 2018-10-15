@@ -21,7 +21,8 @@ advanced-nginx
     * [merge_slashes](#merge_slashes)
     * [location](#location)
     * [server_tokens](#server_tokens)
-
+    * [client_max_body_size](#client_max_body_size)
+    
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -480,3 +481,16 @@ curl 'http://127.0.0.1/a'
    Server: nginx
 ```
 参数string在商业版本中使用
+
+## client_max_body_size
+```
+   Syntax:	client_max_body_size size;
+   Default:	client_max_body_size 1m;
+   Context:	http, server, location
+```
+设置允许客户端请求正文的最大长度，请求长度由Content-Length请求头指定。如果超过设定值，将返回413(Request Entity Too Large)。浏览器不能正确显示这个错误。size为0可以使nginx不检查客户端请求正文长度
+当实际传的正文大于nginx限制，但是重写Content-Length，不会报错
+```
+   curl 'http://127.0.0.1' -H 'Content-Length: 1234
+```
+默认值1m的可接受最大Content-Length为1048576
