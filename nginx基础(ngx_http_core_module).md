@@ -17,6 +17,7 @@ advanced-nginx
 * [ngx_http_core_module](#ngx_http_core_module)
     * [root](#root)
     * [alias](#alias)
+    * [error_page](#error_page)
     * [merge_slashes](#merge_slashes)
     * [location](#location)
 
@@ -175,6 +176,64 @@ curl 'http://127.0.0.1/a/b'
 curl 'http://127.0.0.1/a/b'
 ```
 会输出/tmpb
+
+## error_page
+```
+   Syntax:	error_page code ... [=[response]] uri;
+   Default:	—
+   Context:	http, server, location, if in location
+```
+  为错误定义显示的URI或者状态码
+```nginx
+   root /tmp;
+   location /a {
+      error_page 404 /b;   
+   }
+   location /b {
+      return 200 123;
+   }
+```
+如果请求uri为/a，出现404，则uri变为/b，重新查找location，返回123；对于http_code，即使return 200，最后的结果也是404
+```nginx
+   root /tmp;
+   location /a {
+      error_page 404 /b;   
+   }
+```
+如果请求uri为/a，出现404，则uri变为/b，查找/tmp/b，返回/tmp/b的文件内容；对于http_code，即使return 200，最后的结果也是404
+
+```nginx
+   location / {
+      error_page 500 502 503 504 /50x.html;   
+   }
+```
+对于http_code500 502 503 504，使用error_page
+
+```nginx
+   location /a {
+      error_page 404 =200 /200.html;   
+   }
+```
+
+如果发生404，则error_page执行后的响应码是200，**注意404后面有一个空格**
+
+```nginx
+   location /a {
+      error_page 404 = /200.php;   
+   }
+```
+如果URI将被发送到一个被代理的服务器处理，或者发送到一个FastCGI服务器处理，这些后端服务器又返回了不同的响应码，那么这些响应码可以由根据被处理后的结果展现，以上配置的最终响应码取决于/200.php，**注意等号两面都有空格**
+
+```nginx
+   location /a {
+      error_page 404 http://127.0.0.1:81/a;   
+   }
+   location /b {
+      error_page 404 =200 http://127.0.0.1:81/b;   
+   }
+```
+也可以进行重定向
+
 ## merge_slashes
 ```
    Syntax:	merge_slashes on | off;
