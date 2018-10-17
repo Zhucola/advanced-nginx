@@ -71,6 +71,9 @@ http {
 ```
 指定支持的协议版本
 
+如果客户端使用的协议版本大于服务端支持的，则报错SSL23_GET_SERVER_HELLO:unsupported protocol
+
+
 **TLSv1.1 TLSv1.2 仅仅在OpenSSL1.0.1以上版本才支持**
 
 **TLSv1.3仅仅在OpenSSL1.1.1版本才支持**
