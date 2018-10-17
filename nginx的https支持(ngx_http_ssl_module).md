@@ -10,9 +10,11 @@
 **查看OpenSSL的基本操作请移步至 OpenSSL.md**
 
 ngx_http_ssl_module模块使nginx能够支持https
+
 该模块**不默认编译**，使用该模块需要--with-http_ssl_module
 
 该模块需要OpenSSL库
+
 为了减少服务器负载，建议配置
 ```nginx
 worker_processes auto;
@@ -56,7 +58,9 @@ http {
     Context:	http, server
 ```
 定义发送数据buffer区域的大小
+
 如果发送的数据较大，则使用默认的16k就好
+
 如果发送的数据小，则使用4k
 
 # ssl_protocols
@@ -66,6 +70,7 @@ http {
   Context:	http, server
 ```
 指定支持的协议版本
+
 **TLSv1.1 TLSv1.2 仅仅在OpenSSL1.0.1以上版本才支持**
 
 **TLSv1.3仅仅在OpenSSL1.1.1版本才支持**
@@ -77,7 +82,9 @@ http {
   Context:	http, server
 ```
 给指定的主机提供PEM格式的证书
+
 如果还需要提供中间证书，那么应该按照顺序先指定主证书，然后提供中间证书
+
 从版本1.11.0开始，该指令可以指定多个不同类型的证书，如RSA和ECDSA
 ```nginx
 server {
@@ -99,6 +106,7 @@ server {
   Context:	http, server
 ```
 提供一个配置与ssl_certificate证书的秘钥
+
 配置了秘钥后，每次重启都需要重新输入秘钥密码，除非使用指令ssl_password_file指定密码
 
 # ssl_password_file
@@ -108,7 +116,9 @@ server {
   Context:	http, server
 ```
 在1.7.3版本中出现
+
 提供一个与指定ssl_certificate_key秘钥文件的密码
+
 其中可以提供多个密码，每一行一个，在使用密码的时候轮流尝试密码
 ```nginx
 server {
@@ -129,8 +139,11 @@ server {
   Context:	http, server
 ```
 是否校验客户端证书，校验结果会保存在变量$ssl_client_verify中
+
 参数optional会请求客户端证书，客户端提供了证书的时候校验，不提供不校验
+
 参数optional_no_ca会请求客户端证书，但是客户端证书不需要被CA证书信任
+
 该指令与ssl_client_certificate 配套使用，需要指定ssl_client_certificate 参数
 
 # ssl_client_certificate 
@@ -177,9 +190,11 @@ server {
     Context:	http, server
 ```
 定义如何存储session
+
 参数none
 
     nginx告诉客户端可以重用session，但是nginx不会存储session，实际上没有使用session
+    
 参数off
 
     nginx告诉客户端不可以重用session
