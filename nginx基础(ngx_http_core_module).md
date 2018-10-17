@@ -189,7 +189,9 @@ me.types里面的text/html     html htm shtml;相匹配
    Context:	http, server, location
 ```
 设置文件扩展名和响应的MIME类型的映射表，可以将多个扩展名映射到同一种类型
+
 nginx都会有一行include mime.types;的，可以去mime.types里面查看映射信息，里面包含了足够多的类型
+
 如果不想使用mime.types，而为所有请求都响应唯一的Content-Type，可以使用如下配置
 ```nginx
    location / {
