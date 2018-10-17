@@ -57,6 +57,7 @@ server {
     curl 'http://127.0.0.1' -H 'host: xxx.com'
 ```
 以上请求的host被指定为xxx.com，没有server_name与其匹配，所以nginx会将请求分发到定义在此端口上的默认虚拟主机(第一个被列出的)，返回http_code 200，消息体server_name is a.com b.com
+
 如果将nginx配置改为
 ```nginx
 server {
@@ -97,6 +98,7 @@ server {
     curl 'http://127.0.0.1' -H 'host: xxx.com'
 ```
 返回curl: (52) Empty reply from server
+
 不是一定要返回444，可以根据自身的业务需求来处理逻辑，比如我要返回"没有host头与之匹配"
 ```nginx
 server {
@@ -126,7 +128,9 @@ server {
 }
 ```
 上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
+
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
+
 # ngx_http_core_module
 ## default_type
 ```
@@ -175,8 +179,7 @@ server {
 ```
    curl -v 'http://127.0.0.1'
 ```
-执行命令echo "file is a.html" > /tmp/a.html，请求后响应Content-Type: text/html，不会执行default_type命令，因为会查看a.html，文件后缀html与im
-me.types里面的text/html     html htm shtml;相匹配
+执行命令echo "file is a.html" > /tmp/a.html，请求后响应Content-Type: text/html，不会执行default_type命令，因为会查看a.html，文件后缀html与imme.types里面的text/html     html htm shtml;相匹配
 
 ## types
 ```
@@ -208,7 +211,9 @@ nginx都会有一行include mime.types;的，可以去mime.types里面查看映�
    Context:	http, server, location, if in location
 ```
 仅仅是将uri拼到root值的后面
+
 path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
+
 如果nginx的编译路径是/usr/local/nginx，则默认的root位置是/usr/local/nginx/html
 ```nginx
    root /tmp;
@@ -228,7 +233,9 @@ curl 'http://127.0.0.1/a/b'
    Context:	location
 ```
 path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
+
 指定一个指定路径的替换路径
+
 alias和rewrite不能同时出现
 ```nginx
    alias /tmp;
@@ -326,7 +333,7 @@ curl 'http://127.0.0.1/a/b'
    Default:	merge_slashes on;
    Context:	http, server
 ```
-   开启或者关闭将请求中URI相邻的两个或者更多斜线合并成一个的功能
+   开启或者关闭将请求中URI相邻的两个或者更多斜线合并成一个的功能  
    压缩URI对于前缀匹配和正则匹配的正确性是很重要的，没有开启这个功能时，请求//script/one.php不能被location /scripts/匹配
    如果URI中包含base64编码内容，必须将斜线压缩调整成off，因为base64编码本身会使用"/"字符，然而出于安全方面的考虑，最好还是不要关闭压缩
 ```nginx
@@ -339,6 +346,7 @@ curl 'http://127.0.0.1/a/b'
 curl 'http://127.0.0.1/a//b'
 ```
 会输出/a/b
+
 ## location
 ```
    Syntax:	location [ = | ~ | ~* | ^~ ] uri { ... }    location @name { ... }
