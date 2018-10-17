@@ -15,6 +15,8 @@ advanced-nginx
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
+    * [default_type](#default_type)
+    * [types](#types)
     * [root](#root)
     * [alias](#alias)
     * [error_page](#error_page)
@@ -126,6 +128,76 @@ server {
 上面的配置中，nginx首先检查请求的IP地址和端口是否匹配某个server块中的listen指令配置。接着nginx继续测试请求host头是否匹配这个server块中的某个server_name值，如果没有匹配则将这个请求交给默认主机。
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 # ngx_http_core_module
+## default_type
+```
+   Syntax:	default_type mime-type;
+   Default:	default_type text/plain;
+   Context:	http, server, location
+```
+   该指令应该和types指令配合学习
+   
+   定义**默认**响应类型(Content-Type)，**默认**的意思就是文件的扩展名不在nginx定义的MIME映射表里
+   
+   例外：如请求一个*.php文件，php扩展名不在MIME映射表，不会走default_type，因为php主动响应了Content-Type
+   
+```nginx
+   root /tmp;
+   index a.html;
+   default_type text/plain;
+   location / {
+      return 200 123;
+   }
+```
+```
+   curl -v 'http://127.0.0.1'
+```
+以上会输出服务器响应结果，可见响应Content-Type: text/plain
+```nginx
+   root /tmp;
+   index a.html;
+   default_type a/b;
+   location / {
+      return 200 123;
+   }
+```
+```
+   curl -v 'http://127.0.0.1'
+```
+以上会输出服务器响应结果，可见响应Content-Type: a/b
+```nginx
+   root /tmp;
+   index a.html;
+   default_type a/b;
+   location / {
+      # 这里什么都不写
+   }
+```
+```
+   curl -v 'http://127.0.0.1'
+```
+执行命令echo "file is a.html" > /tmp/a.html，请求后响应Content-Type: text/html，不会执行default_type命令，因为会查看a.html，文件后缀html与im
+me.types里面的text/html     html htm shtml;相匹配
+
+## types
+```
+   Syntax:	types { ... }
+   Default:	types {
+         text/html  html;
+         image/gif  gif;
+         image/jpeg jpg;
+      }
+   Context:	http, server, location
+```
+设置文件扩展名和响应的MIME类型的映射表，可以将多个扩展名映射到同一种类型
+nginx都会有一行include mime.types;的，可以去mime.types里面查看映射信息，里面包含了足够多的类型
+如果不想使用mime.types，而为所有请求都响应唯一的Content-Type，可以使用如下配置
+```nginx
+   location / {
+      types {}
+      default_type application/json;
+   }
+```
+
 ## root
 ```
    Syntax:	root path;
