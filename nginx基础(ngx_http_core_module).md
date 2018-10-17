@@ -570,8 +570,10 @@ curl 'http://127.0.0.1/a'
    Default:	client_max_body_size 1m;
    Context:	http, server, location
 ```
+
 设置允许客户端请求正文的最大长度，请求长度由Content-Length请求头指定。如果超过设定值，将返回413(Request Entity Too Large)。浏览器不能正确显示这个错误。size为0可以使nginx不检查客户端请求正文长度
 当实际传的正文大于nginx限制，但是重写Content-Length，不会报错
+
 ```
    curl 'http://127.0.0.1' -H 'Content-Length: 1234
 ```
