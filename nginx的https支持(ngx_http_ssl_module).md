@@ -42,6 +42,7 @@ http {
 * [ssl_verify_client](#ssl_verify_client)
 * [ssl_client_certificate](#ssl_client_certificate)
 * [ssl_session_cache](#ssl_session_cache)
+* [ssl_session_timeout](#ssl_session_timeout)
 
 # ssl
 ```nginx
@@ -213,3 +214,11 @@ server {
     ssl_session_cache builtin:1000 shared:SSL:10m;
 ```
 builtin和shared可以同时指定，但是使用shared会更加高效
+
+## ssl_session_timeout
+```
+    Syntax:	    ssl_session_timeout time;
+    Default:	ssl_session_timeout 5m;
+    Context:	http, server
+```
+提供一个给客户端重用session的时间
