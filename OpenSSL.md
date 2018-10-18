@@ -1,5 +1,9 @@
 联系作者
 - weixin: 363260961
+- QQ: 363260961
+
+nginx交流群
+-  935629460
 
 使用版本
 - CentOS Linux release 7.5.1804 (Core)
