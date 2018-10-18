@@ -20,11 +20,13 @@ advanced-nginx
     * [root](#root)
     * [alias](#alias)
     * [error_page](#error_page)
+    * [try_files](#try_files)
     * [merge_slashes](#merge_slashes)
     * [location](#location)
     * [server_tokens](#server_tokens)
     * [client_max_body_size](#client_max_body_size)
     * [client_header_timeout](#client_header_timeout)   
+    * [etag](#etag)
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -327,6 +329,56 @@ curl 'http://127.0.0.1/a/b'
 
 **如果不存在location @back，则会发生500 Internal Server Error**
 
+## try_files
+```
+   Syntax:	try_files file ... uri;
+            try_files file ... =code;
+   Default:	—
+   Context:	server, location
+```
+按照指定顺序检查文件是否存在，并且使用第一个找到的文件来处理请求。文件路径是根据root和alias指令，将file参数拼接而成
+
+如果找不到，则按最后一个参数指定的uri进行内部跳转
+```
+   server{
+      root /tmp;
+      index index.html;
+      location / {
+         try_files "/a" "/b";
+      }
+   }
+```
+```
+   curl 'http://127.0.0.1'
+```
+在/tmp中没有index.html，创建echo "123" > a，uri为"/",try_files会找/tmp/a，这个文件，返回文件内容123
+
+如果/tmp/a文件不存在，则会将请求uri变成/b,重新查找location，以上配置会返回http_code500，因为进入查找死循环
+
+不能将"/a"改为"a"，这样会查找/tmpa文件，也不能将"/b"改为"b"，这样会将uri变成"b"，正确的uri应该是"/b"
+
+```
+   server{
+      root /tmp;
+      index index.html;
+      location / {
+         try_files "/a" "/b" "/c" "/d";
+      }
+   }
+```
+以上配置，会查找/tmp/a、/tmp/b、/tmp/c文件，如果有一个找到则停止查找；如果都找不到则uri变成/d
+
+```
+   server{
+      root /tmp;
+      index index.html;
+      location / {
+         try_files "/a" "/d" =404;
+      }
+   }
+```
+以上配置，会查找/tmp/a文件，如果都找不到则uri变成/d，并且响应码为http_code 404
+
 ## merge_slashes
 ```
    Syntax:	merge_slashes on | off;
@@ -587,3 +639,15 @@ curl 'http://127.0.0.1/a'
    Context:	http, server
 ```
 定义读取客户端请求头部的超时。如果客户端在这段时间内没有传送完整的头部到nginx， nginx将返回错误408 (Request Time-out)到客户端
+
+## etag
+```
+   Syntax:	etag on | off;
+   Default:	etag on;
+   Context:	http, server, location
+```
+开启或者关闭静态文件自动计算etag响应头
+
+只是在静态文件中有效
+
+默认情况下，请求静态文件会响应etag头，如ETag: "5bc887e1-2"
