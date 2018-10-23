@@ -17,6 +17,6 @@ nginx交流群
 
     nginx的https配置，查看此目录应该有一定的openssl、https协议基础
 
-* [连接处理方法(IO 模型).md](#连接处理方法(IO 模型).md)
+* [连接处理方法IO.md](#连接处理方法IO.md)
 
     nginx的IO 模型简单介绍，仅仅介绍如何设置、切换，网络IO模型详细讲解不在本次nginx总结中
