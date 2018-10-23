@@ -10,9 +10,9 @@ nginx交流群
 * [ngx_http_core_module.md](https://github.com/Zhucola/advanced-nginx/blob/master/ngx_http_core_module.md)
 
     一些nginx的基本命令，入门nginx的基本操作应该从此开始
-* [openssl.md](https://github.com/Zhucola/advanced-nginx/blob/master/openssl.md)
+* [OpenSSL.md](https://github.com/Zhucola/advanced-nginx/blob/master/OpenSSL.md)
 
-    openssl入门，ca证书搭建，openssl.cnf配置文件详解
+    OpenSSL入门，ca证书搭建，openssl.cnf配置文件详解
 * [ngx_http_ssl_module.md](https://github.com/Zhucola/advanced-nginx/blob/master/ngx_http_ssl_module.md)
 
     nginx的https配置，查看此目录应该有一定的openssl、https协议基础
