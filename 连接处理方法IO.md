@@ -20,6 +20,7 @@ nginx交流群
 * [概述](#概述)
 * [几种可选方法介绍](#几种可选方法介绍)
 * [use](#use)
+* [如何查看当前nginx的IO方法](#如何查看当前nginx的IO方法)
 
 # 概述
 nginx支持多种连接处理IO方法，特定IO方法的可用性取决于所使用的平台。如果平台支持多种IO方法，nginx会自动选择最有效的IO方法。但是，如果需要的话，也可以通过指令use指定具体的IO方法
@@ -68,3 +69,17 @@ configure编译选项中可以选择--without-poll_module、--without-pollt_modu
   }
 ```
 通常不会指定，因为nginx会默认选择最优的方案
+
+# 如何查看当前nginx的IO方法
+
+```
+  server{
+    ...
+    error_log /tmp/nginx_error.log debug;  #注意，debug级别需要configure --with-debug
+    ...
+  }
+```
+可以指定error_log为debug级别，然后会有debug信息
+```
+2018/10/23 23:27:40 [debug] 90859#0: epoll add event: fd:7 op:1 ev:00002001 
+```
