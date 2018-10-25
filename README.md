@@ -19,8 +19,8 @@ nginx交流群
 
 * [连接处理方法IO.md](https://github.com/Zhucola/advanced-nginx/blob/master/连接处理方法IO.md)
 
-    nginx的IO 模型简单介绍，仅仅介绍如何设置、切换，**网络IO模型详细讲解不在本次nginx总结中**
+    nginx的IO 模型简单介绍，仅仅介绍如何设置、切换，网络IO模型详细讲解不在本次nginx总结中
     
 * [日志管理.md](https://github.com/Zhucola/advanced-nginx/blob/master/日志管理.md)
 
-    nginx的日志管理，涉及error、access日志、日志结构、日志分割等
+    nginx的日志管理，涉及error、access日志、日志结构等
