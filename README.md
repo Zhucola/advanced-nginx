@@ -3,8 +3,7 @@
 - weixin: 363260961
 - QQ: 363260961
 
-nginx交流群
--  935629460
+**编写不易，转载请注明出处，谢谢**
 
 ## 目录
 * [ngx_http_core_module.md](https://github.com/Zhucola/advanced-nginx/blob/master/ngx_http_core_module.md)
