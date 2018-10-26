@@ -1,12 +1,9 @@
-连接处理方法IO
-=======================
 
 联系作者
 - weixin: 363260961
 - QQ: 363260961
 
-nginx交流群
--  935629460
+**编写不易，转载请注明出处https://github.com/Zhucola/advanced-nginx**
 
 使用版本
 - CentOS Linux release 7.5.1804 (Core)
