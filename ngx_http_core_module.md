@@ -654,8 +654,8 @@ curl 'http://127.0.0.1/a'
 ## return
 ```
    Syntax:	return code [text];
-            return code URL;
-            return URL;
+               return code URL;
+               return URL;
    Default:	—
    Context:	server, location, if
 
@@ -683,4 +683,33 @@ curl 'http://127.0.0.1/a'
 * Empty reply from server
 * Connection #0 to host 127.0.0.1 left intact
 curl: (52) Empty reply from server
+```
+```
+   server {
+      listen 80;
+      location / {
+         return 444 "abc";
+      }
+   }
+```
+请求127.0.0.1:80，请求过程为
+```
+* Rebuilt URL to: http://127.0.0.1/
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 80 (#0)
+> GET / HTTP/1.1
+> Host: 127.0.0.1
+> User-Agent: curl/7.61.0
+> Accept: */*
+> 
+< HTTP/1.1 444 
+< Server: nginx/1.12.2
+< Date: Tue, 06 Nov 2018 13:04:21 GMT
+< Content-Type: text/plain
+< Content-Length: 3
+< Connection: keep-alive
+< 
+* Connection #0 to host 127.0.0.1 left intact
+abc
 ```
