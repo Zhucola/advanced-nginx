@@ -13,6 +13,7 @@
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
+    * [http](#http)
     * [default_type](#default_type)
     * [types](#types)
     * [root](#root)
@@ -27,6 +28,7 @@
     * [etag](#etag)
     * [return](#return)
     * [connection_pool_size](#connection_pool_size)
+    * [interal](#interal)
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -134,6 +136,27 @@ server {
 **默认服务器是监听端口的属性，所以不同的监听端口可以设置不同的默认服务器**
 
 # ngx_http_core_module
+## http
+```
+   Syntax:	http { ... }
+   Default:	—
+   Context:	main
+```
+为服务器提供配置文件上下文
+
+如一个简单的配置示例
+```
+http{
+   include mime.types;
+   server {
+      listen 80;
+      root /tmp;
+      location / {
+          return 200 "test";
+      }
+   }
+}
+```
 ## default_type
 ```
    Syntax:	default_type mime-type;
@@ -661,7 +684,39 @@ curl 'http://127.0.0.1/a'
    Context:	server, location, if
 
 ```
-停止处理并返回指定code给客户端，返回非标准状态码444可以直接关闭连接而不返回响应头
+停止处理并返回指定code给客户端
+
+该指令在debug的时候非常有用，比如nginx请求一个404的页面，如果想要知道nginx到底请求了什么路径，可以
+```
+   server {
+      listen 80;
+      location / {
+         return 200 $request_filename;
+      }
+   }
+```
+在fastcgi下，也可以
+```
+   server {
+      listen 80;
+      location / {
+         fastcgi_pass http://127.0.0.1:9000;
+         include fastcgi.conf;
+         return 200 $document_root$fastcgi_script_name;
+      }
+   }
+```
+可以返回各种nginx内部定义好的，和自己定义的变量
+```
+   server {
+      listen 80;
+      set $name 123;
+      location / {
+         return 200 $name;
+      }
+   }
+```
+返回非标准状态码444可以直接关闭连接而不返回响应头
 ```
    server {
       listen 80;
@@ -749,3 +804,30 @@ return http:\/\/uri  响应码为302
 允许微调为每个连接分配的内存，这个指令对nginx的性能影响非常小，一般不应该使用
 
 默认值256在32位系统，512在64位系统
+
+## interal
+
+```
+   Syntax:	internal;
+   Default:	-
+   Context:	location
+```
+指定一个路径是否只能用于内部访问，如果是外部访问，客户端将收到404
+```
+   server {
+      listen 80;
+      location / {
+         internal;
+         return 200 "test";
+      }
+   }
+```
+请求127.0.0.1:80，返回的响应码为404而不是200
+
+内部访问是
+- error_page、index、random_index、和try_files指令引起的重定向
+- 由后端服务器返回的X-Accel-Redirect响应头引起的重定向
+- 由ngx_http_ssi_module和ngx_http_addition_module模块的include virtual指令产生的子请求
+- 用rewrite指令对请求进行修改
+
+nginx限制每个请求只能最多进行10次内部重定向，以防配置错误引起请求处理出现问题，如果已经达到10次，nginx将返回500，同时日志中有rewrite or internal redirection cycle
