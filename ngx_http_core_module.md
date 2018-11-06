@@ -25,6 +25,7 @@
     * [client_max_body_size](#client_max_body_size)
     * [client_header_timeout](#client_header_timeout)   
     * [etag](#etag)
+    * [return](#return)
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -649,3 +650,37 @@ curl 'http://127.0.0.1/a'
 只是在静态文件中有效
 
 默认情况下，请求静态文件会响应etag头，如ETag: "5bc887e1-2"
+
+## return
+```
+   Syntax:	return code [text];
+            return code URL;
+            return URL;
+   Default:	—
+   Context:	server, location, if
+
+```
+停止处理并返回指定code给客户端，返回非标准状态码444可以直接关闭连接而不返回响应头
+```
+   server {
+      listen 80;
+      location / {
+         return 444;
+      }
+   }
+```
+请求127.0.0.1:80，请求过程为
+```
+* Rebuilt URL to: http://127.0.0.1/
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 80 (#0)
+> GET / HTTP/1.1
+> Host: 127.0.0.1
+> User-Agent: curl/7.61.0
+> Accept: */*
+> 
+* Empty reply from server
+* Connection #0 to host 127.0.0.1 left intact
+curl: (52) Empty reply from server
+```
