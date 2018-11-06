@@ -26,6 +26,7 @@
     * [client_header_timeout](#client_header_timeout)   
     * [etag](#etag)
     * [return](#return)
+    * [connection_pool_size](#connection_pool_size)
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -738,3 +739,13 @@ return http:\/\/uri  响应码为302
 对于return重定向，要么写成return http:\/\/url这种形式，要么写成return 302 http:\/\/url这种形式（或者将302换成301、307）
 
 如果return 200 http:\/\/url，则不会重定向，响应码是200，响应body体是"http:\/\/url"
+
+## connection_pool_size
+```
+   Syntax:	connection_pool_size size;
+   Default:	connection_pool_size 256|512;
+   Context:	http, server
+```
+允许微调为每个连接分配的内存，这个指令对nginx的性能影响非常小，一般不应该使用
+
+默认值256在32位系统，512在64位系统
