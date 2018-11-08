@@ -23,3 +23,7 @@
 * [日志管理.md](https://github.com/Zhucola/advanced-nginx/blob/master/日志管理.md)
 
     nginx的日志管理，涉及error、access日志、日志结构等
+    
+* [命令行与热部署操作.md](https://github.com/Zhucola/advanced-nginx/blob/master/命令行与热部署操作.md)
+
+    nginx的信号管理（如平滑重启、启动、停止、重新创建日志文件）和热部署操作
