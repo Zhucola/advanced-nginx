@@ -24,6 +24,6 @@
 
     nginx的日志管理，涉及error、access日志、日志结构等
     
-* [命令行与热部署与回滚操作.md](https://github.com/Zhucola/advanced-nginx/blob/master/命令行与热部署与回滚操作.md)
+* [命令行与热部署与回滚操作.md](https://github.com/Zhucola/advanced-nginx/blob/master/命令行与热部署操作.md)
 
-    nginx的信号管理（如平滑重启、启动、停止、重新创建日志文件）和热部署、热部署回滚操作
+    nginx的信号管理（如平滑重启、启动、停止、重新创建日志文件）和热部署操作
