@@ -144,7 +144,7 @@ nginx: [emerg] zone "zone=test:30k" is too small in /usr/local/nginx/conf/nginx.
 </body>
 </html>
 ```
-这种非程序员能看懂的提示语不是我们想要的，所以我们应该结合error_page命令来与并发限频一起使用
+这种非程序员能看懂的提示语不是我们想要的，所以我们应该结合error_page(https://github.com/Zhucola/advanced-nginx/blob/master/ngx_http_core_module.md#error_page)命令来与并发限频一起使用
 
 ```
 http {
