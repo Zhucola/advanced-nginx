@@ -13,6 +13,7 @@
 对于一些服务器流量异常、负载过大，甚至是大流量的恶意攻击访问等，进行并发数的限制；该模块可以根据定义的键来限制每个键值的连接数，只有那些正在被处理的请求（这些请求的头信息已被完全读入）所在的连接才会被计数。
 ## 目录
 * [limit_conn_zone](#limit_conn_zone)
+* [limit_conn](#limit_conn)
 * [limit_conn_status](#limit_conn_status)
 * [并发限制于error_page的结合使用](#并发限制于error_page的结合使用)
 
@@ -111,6 +112,71 @@ nginx: [emerg] zone "zone=test:30k" is too small in /usr/local/nginx/conf/nginx.
 
 如果区域存储已用完，服务器将将错误返回给所有其他请求
 
+## limit_conn 
+```
+Syntax:	limit_conn zone number;
+Default:	—
+Context:	http, server, location
+```
+比较难描述，直接看例子
+```
+  http{
+    limit_conn_zone $HTTP_AAA zone=test:10m;
+    limit_conn_status 503;
+    server {
+      listen 80;
+      root /tmp;
+      location / {
+          fastcgi_pass http://127.0.0.1:9000;
+          include fastcgi.conf;
+          limit_conn test 5;
+      }
+    }
+  }
+```
+以上就是定义了一个并发限制，名字是test，共享内存大小为10m，限制的键是$HTTP_AAA（也就是header头的AAA）
+```
+  curl 'http://127.0.0.1/a.php' -H 'AAA: 123'
+```
+当并发数量$HTTP_AAA达到6时候，第6个请求会保存，返回响应码506
+
+也可以在一个location里面配置多个limit_conn
+```
+  http{
+    limit_conn_zone $HTTP_AAA zone=test_1:10m;
+    limit_conn_zone $uri zone=test_2:10m;
+    limit_conn_status 503;
+    server {
+      listen 80;
+      root /tmp;
+      location / {
+          fastcgi_pass http://127.0.0.1:9000;
+          include fastcgi.conf;
+          limit_conn test_1 5;
+          limit_conn test_2 10;
+      }
+    }
+  }
+```
+
+limit_conn如果当前级别没有指明，则从前一个级别继承
+```
+  http{
+    limit_conn_zone $HTTP_AAA zone=test:10m;
+    limit_conn_status 503;
+    server {
+      listen 80;
+      root /tmp;
+      limit_conn test 5;
+      location / {
+          fastcgi_pass http://127.0.0.1:9000;
+          include fastcgi.conf;
+      }
+    }
+  }
+```
+
+则被location /的匹配的请求，会使用limit_conn test 5;
 ## limit_conn_status 
 ```
   Syntax:	limit_conn_status code;
