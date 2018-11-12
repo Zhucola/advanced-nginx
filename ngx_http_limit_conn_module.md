@@ -15,6 +15,7 @@
 * [limit_conn_zone](#limit_conn_zone)
 * [limit_conn](#limit_conn)
 * [limit_conn_status](#limit_conn_status)
+* [limit_conn_log_level](#limit_conn_log_level)
 * [并发限制于error_page的结合使用](#并发限制于error_page的结合使用)
 
 ## limit_conn_zone 
@@ -196,6 +197,18 @@ limit_conn如果当前级别没有指明，则从前一个级别继承
 <hr><center>nginx/1.14.1</center>
 </body>
 </html>
+```
+## limit_conn_log_level 
+```
+Syntax:	limit_conn_log_level info | notice | warn | error;
+Default:	limit_conn_log_level error;
+Context:	http, server, location
+```
+设置在并发超限情况下，在error_log中的日志级别
+
+默认情况下为error级别报错，日志描述为
+```
+2018/11/12 23:05:51 [error] 21012#0: *12 limiting connections by zone "test_2", client: 127.0.0.1, server: localhost, request: "GET /a.php HTTP/1.1", host: "127.0.0.1"
 ```
 
 ## 并发限制于error_page的结合使用
