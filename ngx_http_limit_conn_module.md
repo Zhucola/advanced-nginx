@@ -14,6 +14,7 @@
 ## 目录
 * [limit_conn_zone](#limit_conn_zone)
 * [limit_conn_status](#limit_conn_status)
+* [并发限制于error_page的结合使用](#并发限制于error_page的结合使用)
 
 ## limit_conn_zone 
 ```
@@ -24,6 +25,11 @@
 设置一个共享区间，用于存储各种各样的key的连接状态
 
 该命令和limit_zone命令一起配合使用
+
+size的大小最小为32k（32K），否则会报错
+```
+nginx: [emerg] zone "zone=test:30k" is too small in /usr/local/nginx/conf/nginx.conf:8
+```
 
 参数key可以是文本、变量和他们的组合
 ```
@@ -41,9 +47,9 @@
     }
   }
 ```
-以上配置的意思就是定一个名字是test，大小为10m的共享区间，该共享区间用记录将请求的头信息已被完全读入的请求，记录的键为$remote_addr
+以上配置的意思就是定一个名字是test，大小为10m的共享区间，该共享区间用以记录将请求的头信息已被完全读入的请求，记录的键为$remote_addr
 
-比如：
+比如并发情况下：
 1.请求$remote_addr为127.0.0.1，则test区间127.0.0.1的键自增请求数为1
 2.请求$remote_addr为127.0.0.1，则test区间127.0.0.1的键自增请求数为2
 3.请求$remote_addr为127.0.0.1，则test区间127.0.0.1的键自增请求数为3
@@ -53,7 +59,7 @@
 
 可以创建5个xshell窗口，在/tmp目录下创建文件a.php，a.php中sleep(50);，也就是阻塞50秒
 
-5个窗口的$remote_addr为127.0.0.1，模拟5个并发操作，在第5个并发创建的时候，会返回503
+5个窗口的$remote_addr为127.0.0.1，模拟5个并发操作，在第6个并发创建的时候，会返回503
 
 ```
   http{
@@ -98,7 +104,7 @@
   curl 'http://127.0.0.1/a.php' -H 'AAA: 123'
 ```
 
-也就是说，如果heade头AAA值为123，那么最多接受4个并发；如果有请求没有heade头AAA，那么没有并发限制
+也就是说，如果heade头AAA值为123，那么最多接受5个并发；如果有请求没有heade头AAA，那么没有并发限制
 
 **注意**
 如果用IP作为键限制，则应该使用$binary_remote_addr替代$remote_addr，因为$remote_addr参数长度在7至15个字节，而$binary_remote_addr长度在IPV4下总是为4字节，在IPV6下总是为16字节
@@ -113,4 +119,64 @@
 ```
 设置状态代码以响应拒绝的请求返回
 
+注意这个code值应该在400和599之间
 
+503的响应码具体信息为
+```
+<html>
+<head><title>503 Service Temporarily Unavailable</title></head>
+<body bgcolor="white">
+<center><h1>503 Service Temporarily Unavailable</h1></center>
+<hr><center>nginx/1.14.1</center>
+</body>
+</html>
+```
+
+## 并发限制于error_page的结合使用
+
+使用ngx_http_limit_conn_module模块来做并发限频，默认情况下会返回http code503
+```
+<html>
+<head><title>503 Service Temporarily Unavailable</title></head>
+<body bgcolor="white">
+<center><h1>503 Service Temporarily Unavailable</h1></center>
+<hr><center>nginx/1.14.1</center>
+</body>
+</html>
+```
+这种非程序员能看懂的提示语不是我们想要的，所以我们应该结合error_page命令来与并发限频一起使用
+
+```
+http {
+  include       mime.types;
+  limit_conn_zone $uri$HTTP_id zone=test:32k;
+  server {
+      listen       80;
+      server_name  localhost;
+      error_page 599 = /response;
+      location / {
+          limit_conn_status 599;
+          limit_conn test 10;
+          root /tmp;
+          fastcgi_pass 127.0.0.1:9000;
+          include fastcgi.conf;
+      }
+      location /response {
+          default_type  application/json;
+          return 200 '{"code":1,"message":"请求超限"}';
+      }
+  }
+}
+```
+以上配置中，如果请求$uri$HTTP_id并发达到了11，则limit_conn_status会返回599响应码，又因为我们有error_page指令，所以被转到location /response，最后返回
+```
+< HTTP/1.1 200 OK
+< Server: nginx/1.14.1
+< Date: Mon, 12 Nov 2018 14:56:30 GMT
+< Content-Type: application/json
+< Content-Length: 35
+< Connection: keep-alive
+< 
+* Connection #0 to host 127.0.0.1 left intact
+{"code":1,"message":"请求超限"}
+```
