@@ -292,6 +292,7 @@ curl 'http://127.0.0.1/a/b'
    Context:	http, server, location, if in location
 ```
   为错误定义显示的URI或者状态码
+  如果是fastcgi的服务器，则需要设置fastcgi的配置fastcgi_intercept_errors on;
 ```nginx
    root /tmp;
    location /a {
