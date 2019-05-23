@@ -300,6 +300,25 @@ curl 'http://127.0.0.1/a/b'
 curl 'http://127.0.0.1/a/b'
 ```
 会输出/tmp/a/b
+```nginx
+   root /tmp
+   location /a {
+      alias /tmp;
+      return 200 $request_filename;
+   }
+   location /x {
+      return 200 $request_filename;
+   }
+```
+```curl
+curl 'http://127.0.0.1/x/y'
+```
+会输出/tmp/x/y
+
+```curl
+curl 'http://127.0.0.1/a/b
+```
+会输出/tmp/b
 ## error_page
 ```
    Syntax:	error_page code ... [=[response]] uri;
