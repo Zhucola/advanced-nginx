@@ -243,6 +243,21 @@ curl 'http://127.0.0.1/a/b'
 ```
 会输出/tmp/a/b
 
+如果想要输出根目录
+```nginx
+   root /tmp;
+   location /a {
+      return 200 $document_root;
+   }
+```
+
+如果想要输出请求文件的真实目录
+```nginx
+   root /tmp;
+   location /a {
+      return 200 $request_filename;
+   }
+```
 ## alias
 ```
    Syntax:	alias path;
