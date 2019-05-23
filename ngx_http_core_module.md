@@ -270,8 +270,8 @@ path值可以是变量，但是不能是$document_root和$realpath_root；因为
 
 alias和rewrite不能同时出现
 ```nginx
-   alias /tmp;
    location /a {
+      alias /tmp;
       return 200 $request_filename;
    }
 ```
@@ -280,9 +280,9 @@ curl 'http://127.0.0.1/a/b'
 ```
 会输出/tmp/b
 ```nginx
-   alias /tmp;
    merge_slashes on;
    location /a/ {
+      alias /tmp;
       return 200 $request_filename;
    }
 ```
@@ -290,7 +290,16 @@ curl 'http://127.0.0.1/a/b'
 curl 'http://127.0.0.1/a/b'
 ```
 会输出/tmpb
-
+```nginx
+   location / {
+      alias /tmp;
+      return 200 $request_filename;
+   }
+```
+```curl
+curl 'http://127.0.0.1/a/b'
+```
+会输出/tmp/a/b
 ## error_page
 ```
    Syntax:	error_page code ... [=[response]] uri;
