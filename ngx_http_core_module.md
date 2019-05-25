@@ -329,6 +329,17 @@ curl 'http://127.0.0.1/a/b
   如果是fastcgi的服务器，则需要设置fastcgi的配置fastcgi_intercept_errors on;
 ```nginx
    root /tmp;
+   error_page 404 /b;
+   location / {
+      return 404 /ii;
+   }
+   location /b {
+      return 404 123;
+   }
+```
+请求uri为/，会被location /匹配，返回404到error_page，error_page将uri变成/b重新查找location，找到location /b返回123，不会造成死循环
+```nginx
+   root /tmp;
    location /a {
       error_page 404 /b;   
    }
