@@ -431,12 +431,26 @@ curl 'http://127.0.0.1/a/b
 ```
    curl 'http://127.0.0.1'
 ```
-在/tmp中没有index.html，创建echo "123" > a，uri为"/",try_files会找/tmp/a，这个文件，返回文件内容123
+创建echo "123" > a，uri为"/",try_files会找/tmp/a，这个文件，返回文件内容123
 
 如果/tmp/a文件不存在，则会将请求uri变成/b,重新查找location，以上配置会返回http_code500，因为进入查找死循环
 
 不能将"/a"改为"a"，这样会查找/tmpa文件，也不能将"/b"改为"b"，这样会将uri变成"b"，正确的uri应该是"/b"
 
+try_files指令的优先级是大于index指令的
+```
+   server{
+      root /tmp;
+      index index.html;
+      location / {
+         try_files "/a" "/b";
+      }
+      location /b{
+         return 200 "location b";
+      }
+   }
+```
+如果存在/tmp/index.html，请求uri为"/"，不会查找/tmp/index.html，会直接找/tmp/a，找不到在继续找location /b
 ```
    server{
       root /tmp;
