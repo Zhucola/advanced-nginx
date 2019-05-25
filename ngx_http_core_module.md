@@ -630,6 +630,16 @@ nginx: [emerg] duplicate location "/a"
    }
 ```
 请求uri为/abc，会返回111，请求uri为akl，会返回222
+```nginx
+   location /a {  
+      return 200 111;
+   }
+   location ^~ /ab {  
+      return 200 222;
+   }
+```
+请求uri为/abc，会返回222，请求uri为a，会返回111
+
 
 路径匹配在URI**规范化**以后进行，所谓规范化，就是先将URI中形如"%XX"的编码字符进行编码，再解析URI中的相对路径"."和".."部分，另外还可能会压缩相邻的两个或多个斜线成为一个斜线(需要merge_slashes on;)
 ```nginx
