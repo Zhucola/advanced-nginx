@@ -5,6 +5,7 @@
 * [proxy_pass_request_body](#proxy_pass_request_body)
 * [proxy_pass](#proxy_pass)
 * [proxy_set_header](#proxy_set_header)
+* [underscores_in_headers](#underscores_in_headers)
 * [获取代理模式下的真实用户ip](#获取代理模式下的真实用户ip)
 
 # proxy_connect_timeout
@@ -233,7 +234,77 @@ Context:	http, server, location
   }
 ```
 请求80端口uri为/，会输出xx，相当于81端口对head头BB做了重写
-
+```
+  server {
+    listen 80;
+    location / {
+      proxy_set_header AA aa;
+      proxy_pass http://127.0.0.1:81;
+    }
+  }
+  server {
+    listen 81;
+    location / {
+       proxy_set_header BB bb;
+       proxy_pass http://127.0.0.1:82;
+    }
+  }
+  server {
+    listen 82;
+    location / {
+      return 200 $HTTP_AA;
+    }
+  }
+```
+请求80端口uri为/，可以获取到第一次proxy添加的header头，所以输出aa
+# underscores_in_headers
+```
+Syntax:	underscores_in_headers on | off;
+Default:	
+underscores_in_headers off;
+Context:	http, server
+```
+自定义的header头变量是否可以带下划线
+```
+server {
+    listen 81;
+    underscores_in_headers off;
+    location / {
+       proxy_set_header aa $http_a_b;
+       proxy_pass http://127.0.0.1:82;
+    }
+  }
+  server {
+    listen 82;
+    location / {
+      return 200 $HTTP_AA;
+    }
+  }
+```
+```
+  curl 'http://127.0.0.1:81' -H 'a_b: 123'
+```
+请求将获取不到aa的header头，需要将underscores_in_headers改为on这样才能获取到$http_a_b
+```
+server {
+    listen 81;
+    underscores_in_headers on;
+    location / {
+       proxy_set_header aa $http_a_b;
+       proxy_pass http://127.0.0.1:82;
+    }
+  }
+  server {
+    listen 82;
+    location / {
+      return 200 $HTTP_AA;
+    }
+  }
+```
+```
+  curl 'http://127.0.0.1:81' -H 'a_b: 123'
+```
+输出123
 # 获取代理模式下的真实用户ip
 - Client C -> Server S  S获取的remote_addr为C的ip
 - Client C1 -> proxy Server S1 -> proxy Server S2 -> Server S3     S3获取的remote_addr为S2的
