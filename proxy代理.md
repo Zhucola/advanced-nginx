@@ -305,6 +305,33 @@ server {
   curl 'http://127.0.0.1:81' -H 'a_b: 123'
 ```
 输出123
+
+```
+server {
+    listen 81;
+    underscores_in_headers on;
+    location / {
+       return 200 $HTTP_AA_A;
+    }
+  }
+```
+```
+  curl 'http://127.0.0.1' -H 'AA_A: 123'
+```
+输出123
+```
+server {
+    listen 81;
+    underscores_in_headers off;
+    location / {
+       return 200 $HTTP_AA_A;
+    }
+  }
+```
+```
+  curl 'http://127.0.0.1' -H 'AA-A: 123'
+```
+输出123
 # 获取代理模式下的真实用户ip
 - Client C -> Server S  S获取的remote_addr为C的ip
 - Client C1 -> proxy Server S1 -> proxy Server S2 -> Server S3     S3获取的remote_addr为S2的
