@@ -5,22 +5,22 @@ rewrite redirect为用户侧的
 ## 目录
 * [nginx如何处理一个请求](#nginx如何处理一个请求)
 * [ngx_http_core_module](#ngx_http_core_module)
-    * [http](#http)
-    * [default_type](#default_type)
-    * [types](#types)
-    * [root](#root)
-    * [alias](#alias)
-    * [error_page](#error_page)
-    * [try_files](#try_files)
-    * [merge_slashes](#merge_slashes)
-    * [location](#location)
-    * [server_tokens](#server_tokens)
-    * [client_max_body_size](#client_max_body_size)
-    * [client_header_timeout](#client_header_timeout)   
-    * [etag](#etag)
-    * [return](#return)
-    * [connection_pool_size](#connection_pool_size)
-    * [interal](#interal)
+  * [http](#http)
+  * [default_type](#default_type)
+  * [types](#types)
+  * [root](#root)
+  * [alias](#alias)
+  * [error_page](#error_page)
+  * [try_files](#try_files)
+  * [merge_slashes](#merge_slashes)
+  * [location](#location)
+  * [server_tokens](#server_tokens)
+  * [client_max_body_size](#client_max_body_size)
+  * [client_header_timeout](#client_header_timeout)   
+  * [etag](#etag)
+  * [return](#return)
+  * [connection_pool_size](#connection_pool_size)
+  * [interal](#interal)
 # nginx如何处理一个请求
 
 nginx首先选定由那一个虚拟主机来处理请求
@@ -156,11 +156,11 @@ http{
    Context:	http, server, location
 ```
    该指令应该和types指令配合学习
-   
+
    定义**默认**响应类型(Content-Type)，**默认**的意思就是文件的扩展名不在nginx定义的MIME映射表里
-   
+
    例外：如请求一个*.php文件，php扩展名不在MIME映射表，不会走default_type，因为php主动响应了Content-Type
-   
+
 ```nginx
    root /tmp;
    index a.html;
@@ -231,7 +231,7 @@ nginx都会有一行include mime.types;的，可以去mime.types里面查看映�
 
 path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
 
-如果nginx的编译路径是/usr/local/nginx，则默认的root位置是/usr/local/nginx/html
+如果nginx的编译路径是/usr/local/nginx，则默认的root位置是/usr/local/nginx/tmp
 ```nginx
    root /tmp;
    location /a {
