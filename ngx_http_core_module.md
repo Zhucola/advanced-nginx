@@ -231,7 +231,7 @@ nginx都会有一行include mime.types;的，可以去mime.types里面查看映�
 
 path值可以是变量，但是不能是$document_root和$realpath_root；因为$document_root和$realpath_root是根据root或者alias来定义的
 
-如果nginx的编译路径是/usr/local/nginx，则默认的root位置是/usr/local/nginx/html
+如果nginx的编译路径是/usr/local/nginx，则默认的寻找的文件目录位置是/usr/local/nginx/html(因为root默认值是html)
 ```nginx
    root /tmp;
    location /a {
@@ -250,6 +250,7 @@ curl 'http://127.0.0.1/a/b'
       return 200 $document_root;
    }
 ```
+会输出/tmp  
 
 如果想要输出请求文件的真实目录
 ```nginx
@@ -258,6 +259,7 @@ curl 'http://127.0.0.1/a/b'
       return 200 $request_filename;
    }
 ```
+
 ## alias
 ```
    Syntax:	alias path;
