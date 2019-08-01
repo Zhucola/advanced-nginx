@@ -2,9 +2,12 @@
 * [HTTP缓存](#HTTP缓存)
   * [缓存控制](#缓存控制)
   * [缓存校验](#缓存校验)
+  * [200状态码](#200状态码)
   * [304状态码](#304状态码)
   * [200fromDiskCache](#200fromDiskCache)
+  * [具体缓存流程](#具体缓存流程)
 * [header模块](#header模块)
+* [Yii2框架HTTP缓存源码](#Yii2框架HTTP缓存源码)
 
 # HTTP缓存
 ## 缓存控制
@@ -68,3 +71,43 @@ If-None-Match == ETag
 ```
  etag off;
 ```
+## 200状态码
+200状态码会发生于浏览器第一次加载页面、强制刷新、304校验失败、资源缓存过期、浏览器禁用缓存情况  
+  
+如果是浏览器第一次加载，那么请求头不会有Cache-Control、If-None-Match、If-Modified-Since  
+  
+服务端正常响应200，正常将数据传给客户端
+  
+如果是强制刷新，那么浏览器会强制加请求头
+```
+Cache-Control: no-cache
+Pragma: no-cache
+```
+表示需要服务端响应真实数据，不用做校验  
+  
+如果浏览器禁用了缓存Disable Cache，那么也会强制加请求头no-cache
+## 304状态码
+304状态码会发生于刷新页面情况  
+  
+刷新情况浏览器会强制加请求头
+```
+Cache-Control: max-age=0
+```
+  
+表示需要浏览器校验，校验成功就是304，校验失败就是200
+## 200fromDiskCache
+发生过程
+- 浏览器输入url
+- 再开一个新窗口，输入url，发生200from disk cache  
+
+由于访问静态资源，服务端通常都会响应Cache-Control:max-age，表示需要客户端缓存这个静态资源多长时间，如
+```
+Cache-Control: max-age=36536000
+```
+同一个浏览器新窗口再次访问会发生from disk cache  
+## 具体缓存流程
+- 浏览器第一次加载url
+```
+asdsad
+```
+- asdas
