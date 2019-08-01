@@ -105,9 +105,24 @@ Cache-Control: max-age=0
 Cache-Control: max-age=36536000
 ```
 同一个浏览器新窗口再次访问会发生from disk cache  
+
+from disk cache情况服务端不会收到请求
 ## 具体缓存流程
-- 浏览器第一次加载url
+- 浏览器第一次加载url，不会有请求头Cache-Control、If-None-Match、If-Modified-Since,服务端响应200，响应头为
 ```
-asdsad
+Cache-Control:max-age=86400   //告诉客户端缓存86400秒
+Last-Modify:Wed,31 Jul 2019 04:05:42 GMT   //资源最后修改时间
+ETage: "asdadsa"   //资源的ETag
 ```
-- asdas
+- 刷新页面(服务端资源未修改)，请求头如下，发生304
+```
+If-Modified-Since:Wed,31 Jul 2019 04:05:42 GMT   //客户端保存的资源最后修改时间
+ETag: "asdadsa"
+```
+- 刷新页面(服务端资源修改)，发生200
+- 强制刷新，请求头，发生200
+```
+Cache-Control:no-cache
+```
+- 新打开一个页面，缓存86400秒内，发生200 from disk cache
+- 新打开一个页面，缓存86400秒外，发生200
