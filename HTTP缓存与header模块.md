@@ -3,7 +3,7 @@
   * [缓存控制](#缓存控制)
   * [缓存校验](#缓存校验)
   * [304状态码](#304状态码)
-  * [200 from disk cache](#200 from disk cache)
+  * [200fromDiskCache](#200fromDiskCache)
 * [header模块](#header模块)
 
 # HTTP缓存
@@ -46,4 +46,25 @@ If-Modified-Since >= Last-Modifed
 192.168.124.1 - - [31/Jul/2019:13:43:46 +0800] "GET /a.css HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, l
 ike Gecko) Chrome/73.0.3683.86 Safari/537.36"
 ```
+但是Last-Modifed无法解决资源在一秒内连续修改的问题，一秒内连续修改后，客户端只会更新一次  
 
+更好的解决方法是ETag，服务器会响应一个根据资源算出来的字符，如
+```
+ETag: "5d4293ba-19aa"
+```
+第二次客户端请求时候会携带If-None-Match请求头
+```
+If-None-Match: "5d4293ba-19aa"
+```
+如果  
+  
+If-None-Match == ETag
+
+表示资源没有修改，服务端响应304  
+  
+如果同时有ETag和Last-Modify，则ETag的优先级会更高  
+
+但是ETag也有问题，如果服务端是多节点集群，那么有可能A节点算出来的ETag和B节点的ETag可能不同，造成无法正常304响应，在nginx中可以关闭ETag
+```
+ etag off;
+```
