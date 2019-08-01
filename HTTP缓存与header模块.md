@@ -7,6 +7,8 @@
   * [200fromDiskCache](#200fromDiskCache)
   * [具体缓存流程](#具体缓存流程)
 * [header模块](#header模块)
+  * [expires](#expires)
+  * [add_header](#add_header)
 * [Yii2框架HTTP缓存源码](#Yii2框架HTTP缓存源码)
 
 # HTTP缓存
@@ -126,3 +128,35 @@ Cache-Control:no-cache
 ```
 - 新打开一个页面，缓存86400秒内，发生200 from disk cache
 - 新打开一个页面，缓存86400秒外，发生200
+
+# header模块
+## expires 
+```
+Syntax:	expires [modified] time;
+expires epoch | max | off;
+Default:	
+expires off;
+Context:	http, server, location, if in location
+```
+响应码为200, 201, 206, 301, 302, 303, 307, 308情况下会发这个响应头  
+参数可以是正数或者负数，如果为负，则发送的头为
+```
+Cache-Control:no-cache
+```
+可以配置max，这样响应的就是，可以认为是永久缓存
+```
+Expires:Thu,31 Dec 2037 23:55:55 GMT 
+Cache-Control:max-age=315360000
+```
+off参数可以禁用添加或者修改expire和Cache-Control响应  
+
+# add_header
+```
+Syntax:	add_header name value [always];
+Default:	—
+Context:	http, server, location, if in location
+```
+响应码为200、201、204、206、301、302、303、304、307、308则添加指定的响应头  
+如果当前级别没有add_header，则从上一个级别继承，仅仅当前级别没有的话  
+如果定义了always，则不管响应码为多少都添加header  
+
