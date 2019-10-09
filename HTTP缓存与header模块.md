@@ -19,7 +19,7 @@ Pragma是旧产物，已经逐步抛弃，有些网站为了向下兼容还保�
   
 如果在请求header有如下参数  
 ```
-Cache-Control: public,max-ae=86400
+Cache-Control: public,max-age=86400
 Pragma: no-cache
 ```
 则Pragma的优先级更高
